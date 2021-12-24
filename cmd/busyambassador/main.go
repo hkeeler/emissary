@@ -10,7 +10,6 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/datawire/ambassador/v2/pkg/busy"
 	"github.com/datawire/ambassador/v2/pkg/environment"
@@ -70,31 +69,15 @@ func main() {
 
 		defer file.Close()
 
-		// Read line by line and hunt for BUILD_VERSION.
+		// The first line has the version, so, grab a scanner...
 		scanner := bufio.NewScanner(file)
 
 		for scanner.Scan() {
-			line := scanner.Text()
+			// ...set the version from the first line...
+			Version = scanner.Text()
 
-			if strings.HasPrefix(line, "BUILD_VERSION=") {
-				// The BUILD_VERSION line should be e.g.
-				//
-				// BUILD_VERSION="2.0.4-rc.2"
-				//
-				// so... cheat. Split on " and look for the second field.
-				v := strings.Split(line, "\"")
-
-				// If we don't get exactly three fields, though, something
-				// is wrong and we'll give up.
-				if len(v) == 3 {
-					Version = v[1]
-				}
-				// See comments toward the top of this function for why there's no
-				// logging here.
-				// else {
-				// 	fmt.Printf("VERSION OVERRIDE: got %#v ?", v)
-				// }
-			}
+			// ...and we're done.
+			break
 		}
 
 		// Again, see comments toward the top of this function for why there's no

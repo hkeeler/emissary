@@ -232,7 +232,7 @@ builder:
 .PHONY: builder
 
 version:
-	@$(BUILDER) version
+	@echo $(VERSION)
 .PHONY: version
 
 python/ambassador.version: $(tools/write-ifchanged) $(tools/git-godescribe) FORCE
@@ -284,7 +284,7 @@ docker/$(LCNAME).docker.stamp: %/$(LCNAME).docker.stamp: %/base-envoy.docker.tag
 	  docker build -f ${BUILDER_HOME}/Dockerfile . \
 	    --build-arg=envoy="$$(cat $*/base-envoy.docker)" \
 	    --build-arg=builderbase="$$(cat $*/builder-base.docker)" \
-	    --build-arg=version="$(BUILD_VERSION)" \
+	    --build-arg=version="$(VERSION)" \
 	    --target=ambassador \
 	    --iidfile=$@; }
 
@@ -709,7 +709,7 @@ AMB_IMAGE_RC=$(RELEASE_REGISTRY)/$(REPO):$(VERSION)
 AMB_IMAGE_RELEASE=$(RELEASE_REGISTRY)/$(REPO):$(VERSION)
 
 release/promote-oss/.main: $(tools/docker-promote)
-	@[[ "$(VERSION)"      =~ ^[0-9]+\.[0-9]+\.[0-9]+(-.*)?$$ ]] || (echo "MUST SET RELEASE_VERSION"; exit 1)
+	@[[ "$(VERSION)"      =~ ^[0-9]+\.[0-9]+\.[0-9]+(-.*)?$$ ]] || (echo "MUST SET VERSION"; exit 1)
 	@[[ -n "$(PROMOTE_FROM_VERSION)" ]] || (echo "MUST SET PROMOTE_FROM_VERSION"; exit 1)
 	@[[ '$(PROMOTE_TO_VERSION)'   =~ ^[0-9]+\.[0-9]+\.[0-9]+(-.*)?$$ ]] || (echo "MUST SET PROMOTE_TO_VERSION" ; exit 1)
 	@set -e; { \
@@ -728,7 +728,7 @@ release/promote-oss/.main: $(tools/docker-promote)
 	}
 
 	@printf '  $(CYN)https://s3.amazonaws.com/$(AWS_S3_BUCKET)/emissary-ingress/stable.txt$(END)\n'
-	printf '%s' "$(RELEASE_VERSION)" | aws s3 cp - s3://$(AWS_S3_BUCKET)/emissary-ingress/stable.txt
+	printf '%s' "$(VERSION)" | aws s3 cp - s3://$(AWS_S3_BUCKET)/emissary-ingress/stable.txt
 
 	@printf '  $(CYN)s3://scout-datawire-io/emissary-ingress/$(PROMOTE_CHANNEL)app.json$(END)\n'
 	printf '{"application":"emissary","latest_version":"%s","notices":[]}' "$(VERSION)" | aws s3 cp - s3://scout-datawire-io/emissary-ingress/app.json
@@ -873,7 +873,7 @@ release/promote-oss/to-ga:
 	  $(MAKE) release/promote-oss/.main \
 	    PROMOTE_FROM_VERSION="$$dev_version" \
 		PROMOTE_FROM_REPO=$(DEV_REGISTRY) \
-	    PROMOTE_TO_VERSION="$(RELEASE_VERSION)" \
+	    PROMOTE_TO_VERSION="$(VERSION)" \
 	    PROMOTE_CHANNEL= \
 	    ; \
 	}

@@ -16,7 +16,7 @@ release/start:
 
 release/rc/print-test-artifacts:
 	@set -e; { \
-		manifest_ver=$(RELEASE_VERSION) ; \
+		manifest_ver=$(VERSION) ; \
 		manifest_ver=$${manifest_ver%"-dirty"} ; \
 		echo "RC_TAG=v$$manifest_ver" ; \
 		echo "AMBASSADOR_MANIFEST_URL=https://app.getambassador.io/yaml/emissary/$$manifest_ver" ; \
