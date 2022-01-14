@@ -3100,18 +3100,10 @@ spec:
     served: true
     storage: false
 ---
-################################################################################
-# Namespace                                                                    #
-################################################################################
----
 apiVersion: v1
 kind: Namespace
 metadata:
   name: emissary-system
----
-################################################################################
-# ServiceAccount                                                               #
-################################################################################
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -3123,10 +3115,6 @@ metadata:
     app.kubernetes.io/managed-by: kubectl_apply_-f_emissary-apiext.yaml
     app.kubernetes.io/name: emissary-apiext
     app.kubernetes.io/part-of: emissary-apiext
----
-################################################################################
-# Cluster permissions                                                          #
-################################################################################
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -3178,10 +3166,6 @@ subjects:
     namespace: emissary-system
     name: emissary-apiext
 ---
-################################################################################
-# Namespaced permissions                                                       #
-################################################################################
----
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
@@ -3219,10 +3203,6 @@ subjects:
 - kind: ServiceAccount
   namespace: emissary-system
   name: emissary-apiext
----
-################################################################################
-# Main                                                                         #
-################################################################################
 ---
 apiVersion: v1
 kind: Service
